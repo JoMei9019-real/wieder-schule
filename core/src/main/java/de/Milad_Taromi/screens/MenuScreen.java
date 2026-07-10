@@ -72,9 +72,9 @@ public class MenuScreen implements Screen {
         play.addListener(new ChangeListener() { ///PLAY-BUTTON ACTION
         @Override
         public void changed(ChangeEvent event, Actor actor) {
-            System.out.println("[DEBUG] PLAY_S2_PRESSED");
-            //window1();
-            System.out.println("Window: " + Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
+            //System.out.println("[DEBUG] PLAY_S2_PRESSED");
+            //System.out.println("Window: " + Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
+            game.setScreen(new PlayScreen(game));
         }
         });
 
@@ -147,7 +147,7 @@ public class MenuScreen implements Screen {
         ///WINDOW AND BUTTONS
         Window window = new Window("OPTIONS", skin);
         window.defaults().pad(4f);
-        window.setMovable(true);
+        window.setMovable(false);
         window.add(new Label("Not ready yet! :)", skin, "black")).colspan(2).row();
         final TextButton button_ok = new TextButton("OK", skin, "small");
         button_ok.pad(8f);
