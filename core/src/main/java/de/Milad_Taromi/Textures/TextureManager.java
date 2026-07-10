@@ -17,6 +17,7 @@ public class TextureManager {
     public TextButton.TextButtonStyle optionsStyle;
     public TextButton.TextButtonStyle quitStyle;
     public Texture menuBackground;
+    public Texture menuBackgroundHorror;
     public Texture logoTexture;
 
     // Textbox (Dialogfenster)
@@ -35,12 +36,17 @@ public class TextureManager {
         MenuScreenTexture_OPTIONS();
         MenuScreenTexture_EXIT();
         Background_MENU();
+        Background_HORROR();
         Logo();
         Textbox();
     }
 
     public void Background_MENU(){
         menuBackground = new Texture("ui/menu/MenuBackground.png");
+    }
+
+    public void Background_HORROR(){
+        menuBackgroundHorror = new Texture("ui/menu/Horror.png");
     }
 
     public void Logo(){
@@ -107,6 +113,7 @@ public class TextureManager {
 
     public void dispose(){
         menuBackground.dispose();
+        menuBackgroundHorror.dispose();
         logoTexture.dispose();
         textboxTexture.dispose();
 

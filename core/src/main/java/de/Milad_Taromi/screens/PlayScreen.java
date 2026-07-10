@@ -109,13 +109,13 @@ public class PlayScreen implements Screen {
             System.out.println("[DEBUG] ESC was pressed!");
 
             dialogLabel.setText(
-                "Held: \"Brauchst du eine Pause?...\""
+                "Leyley: \"Brauchst du eine Pause?...\""    //FUCK
             );
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             dialogLabel.setText(
-                "Held: \"Mit Leertaste wurde der Text geändert.\""
+                "Andy: \"Mit Leertaste wurde der Text geändert.\""
             );
         }
     }
@@ -126,7 +126,7 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         batch.draw(
-            textureManager.menuBackground,
+            textureManager.menuBackgroundHorror,
             0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()
         );
         batch.end();
@@ -162,6 +162,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
+        batch.dispose();
         stage.dispose();
         skin.dispose();
         textureManager.dispose();
