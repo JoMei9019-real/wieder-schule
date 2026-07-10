@@ -46,7 +46,7 @@ public class TextureManager {
     }
 
     public void Background_HORROR(){
-        menuBackgroundHorror = new Texture("ui/menu/Horror1.png");
+        menuBackgroundHorror = new Texture("ui/menu/Horror2.png");
     }
 
     public void Logo(){
