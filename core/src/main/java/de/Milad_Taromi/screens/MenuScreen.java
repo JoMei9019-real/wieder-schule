@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import de.Milad_Taromi.Game;
-import de.Milad_Taromi.Textures.TextureManager;
+import de.Milad_Taromi.Managers.TextureManager;
 
 public class MenuScreen implements Screen {
 

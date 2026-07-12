@@ -1,4 +1,4 @@
-package de.Milad_Taromi.Textures;
+package de.Milad_Taromi.Managers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;

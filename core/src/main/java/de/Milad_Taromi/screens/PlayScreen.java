@@ -3,18 +3,23 @@ package de.Milad_Taromi.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import de.Milad_Taromi.Game;
-import de.Milad_Taromi.Textures.TextureManager;
+import de.Milad_Taromi.Managers.GameManager;
+import de.Milad_Taromi.Managers.TextureManager;
 
 public class PlayScreen implements Screen {
 
@@ -24,6 +29,9 @@ public class PlayScreen implements Screen {
 
     private final Game game;
 
+    private boolean storyStarted = false;
+    private boolean noinput = false;
+
     private Stage stage;
     private Skin skin;
     private TextureManager textureManager;
@@ -32,6 +40,7 @@ public class PlayScreen implements Screen {
     private Table dialogueTable;
     private Label dialogLabel;
     private SpriteBatch batch;
+    private GameManager gameManager;
 
     public PlayScreen(Game game) {
         this.game = game;
@@ -39,6 +48,7 @@ public class PlayScreen implements Screen {
         batch = new SpriteBatch();
         textureManager = new TextureManager();
         backgroundDrawable = textureManager.textboxDrawable;
+        gameManager = new GameManager(this);
 
         stage = new Stage(new ScreenViewport());
 
@@ -102,29 +112,84 @@ public class PlayScreen implements Screen {
 
         // Falls show() nach resize() aufgerufen wird
         updateLayout();
+        if (!storyStarted) {
+            storyStarted = true;
+            gameManager.startAct1();
+        }
     }
 
+    public void setDialogue(String text) {
+        dialogLabel.setText(text);
+    }
+
+
     private void keyManager() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            System.out.println("[DEBUG] ESC was pressed!");
+       if(noinput != true){
+           if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+               System.out.println("[DEBUG] ESC was pressed!");
+               exitWINDOW();
+           }
 
-            dialogLabel.setText(
-                "Leyley: \"Brauchst du eine Pause?...\""    //FUCK
-            );
-        }
+           if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+               gameManager.nextDialogue();
+           }
+       }
+    }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            dialogLabel.setText(
-                "Andy: \"Mit Leertaste wurde der Text geändert.\""
-            );
-        }
+    public void exitWINDOW(){
+        ///BLOCKER
+        Image blocker = new Image(skin.newDrawable("white", new Color(0, 0, 0, 0.5f)));
+        blocker.setSize(stage.getWidth(), stage.getHeight());
+        blocker.setTouchable(Touchable.enabled); // wichtig, damit es Touch-Events blockt
+        noinput = true;
+        Gdx.input.setInputProcessor(null);
+        stage.addActor(blocker);
+        ///WINDOW AND BUTTONS
+        Window window = new Window("EXIT TO MENU", skin);
+        window.defaults().pad(4f);
+        window.setMovable(false);
+        window.add(new Label("Do you really want to exit?", skin, "black")).colspan(2).row();
+        final TextButton button_yes = new TextButton("YES", skin, "small");
+        final TextButton button_no = new TextButton("NO", skin, "small");
+        button_yes.pad(8f);
+        button_no.pad(8f);
+        button_yes.addListener(new ChangeListener() {
+            @Override
+            public void changed(final ChangeEvent event, final Actor actor) {
+                System.out.println("[DEBUG] EXIT_COMMAND_BExit");
+                window.remove();    //remove it!
+                noinput = false;
+                game.setScreen(new MenuScreen(game));
+            }
+        });
+        button_no.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                window.remove();
+                blocker.remove();
+                noinput = false;
+                Gdx.input.setInputProcessor(stage);
+            }
+        });
+        window.add(button_yes).padRight(20f);
+        window.add(button_no);
+        window.pack();
+        window.setSize(350, 180);
+        // We round the window position to avoid awkward half-pixel artifacts.
+        // Casting using (int) would also work.
+        window.setPosition(MathUtils.roundPositive(stage.getWidth() / 2f - window.getWidth() / 2f),
+            MathUtils.roundPositive(stage.getHeight() / 2f - window.getHeight() / 2f));
+        window.addAction(Actions.sequence(Actions.alpha(0f), Actions.fadeIn(1f)));
+        stage.addActor(window);
+
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
+        batch.begin();          ///Background - Handler
         batch.draw(
             textureManager.menuBackgroundHorror,
             0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()
