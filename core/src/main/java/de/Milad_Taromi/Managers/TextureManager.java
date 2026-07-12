@@ -30,6 +30,14 @@ public class TextureManager {
     private Texture optionsNormal, optionsHover, optionsPressed;
     private Texture exitNormal, exitHover, exitPressed;
 
+    public Texture johnnyNeutral;
+    public Texture johnnyHappy;
+    public Texture johnnyAngry;
+
+    public Texture miladNeutral;
+    public Texture miladHappy;
+    public Texture miladSad;
+
     public TextureManager() {
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
         MenuScreenTexture_PLAY();
@@ -39,6 +47,7 @@ public class TextureManager {
         Background_HORROR();
         Logo();
         Textbox();
+        Portraits();
     }
 
     public void Background_MENU(){
@@ -47,6 +56,79 @@ public class TextureManager {
 
     public void Background_HORROR(){
         menuBackgroundHorror = new Texture("ui/menu/Horror2.png");
+    }
+
+    public void Portraits() {
+        johnnyNeutral = loadPortrait(
+            "ui/game/portraits/johnny_neutral.png"
+        );
+
+        johnnyHappy = loadPortrait(
+            "ui/game/portraits/johnny_neutral.png"  //Vergiss nicht zu ändern bitte! BEI ALLEN!
+        );
+
+        johnnyAngry = loadPortrait(
+            "ui/game/portraits/johnny_neutral.png"
+        );
+
+        miladNeutral = loadPortrait(
+            "ui/game/portraits/johnny_neutral.png"
+        );
+
+        miladHappy = loadPortrait(
+            "ui/game/portraits/johnny_neutral.png"
+        );
+
+        miladSad = loadPortrait(
+            "ui/game/portraits/johnny_neutral.png"
+        );
+    }
+
+    private Texture loadPortrait(String path) {
+        Texture texture = new Texture(
+            Gdx.files.internal(path)
+        );
+
+        texture.setFilter(
+            Texture.TextureFilter.Linear,
+            Texture.TextureFilter.Linear
+        );
+
+        return texture;
+    }
+
+    public Texture getPortraitTexture(
+        DialoguePortrait portrait
+    ) {
+        switch (portrait) {
+            case JOHNNY_NEUTRAL:
+                return johnnyNeutral;
+
+            case JOHNNY_HAPPY:
+                return johnnyHappy;
+
+            case JOHNNY_ANGRY:
+                return johnnyAngry;
+
+            case MILAD_NEUTRAL:
+                return miladNeutral;
+
+            case MILAD_HAPPY:
+                return miladHappy;
+
+            case MILAD_SAD:
+                return miladSad;
+
+            case NONE:
+            default:
+                return null;
+        }
+    }
+
+    private void disposeTexture(Texture texture) {
+        if (texture != null) {
+            texture.dispose();
+        }
     }
 
     public void Logo(){
@@ -111,23 +193,31 @@ public class TextureManager {
         quitStyle.font = skin.getFont("font");
     }
 
-    public void dispose(){
-        menuBackground.dispose();
-        menuBackgroundHorror.dispose();
-        logoTexture.dispose();
-        textboxTexture.dispose();
+    public void dispose() {
+        disposeTexture(menuBackground);
+        disposeTexture(menuBackgroundHorror);
+        disposeTexture(logoTexture);
+        disposeTexture(textboxTexture);
 
-        playNormal.dispose();
-        playHover.dispose();
-        playPressed.dispose();
+        disposeTexture(johnnyNeutral);
+        disposeTexture(johnnyHappy);
+        disposeTexture(johnnyAngry);
 
-        optionsNormal.dispose();
-        optionsHover.dispose();
-        optionsPressed.dispose();
+        disposeTexture(miladNeutral);
+        disposeTexture(miladHappy);
+        disposeTexture(miladSad);
 
-        exitNormal.dispose();
-        exitHover.dispose();
-        exitPressed.dispose();
+        disposeTexture(playNormal);
+        disposeTexture(playHover);
+        disposeTexture(playPressed);
+
+        disposeTexture(optionsNormal);
+        disposeTexture(optionsHover);
+        disposeTexture(optionsPressed);
+
+        disposeTexture(exitNormal);
+        disposeTexture(exitHover);
+        disposeTexture(exitPressed);
 
         skin.dispose();
     }

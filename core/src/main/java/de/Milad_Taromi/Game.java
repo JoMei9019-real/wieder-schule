@@ -17,7 +17,7 @@ public class Game extends com.badlogic.gdx.Game {
     }
 
     public static String getTitle(){
-        String title = "[VALORIA] | Developer Alpha 0.5 | ";
+        String title = "[VALORIA] | Developer Beta 0.6.1 | ";
         return title;
     }
 }
