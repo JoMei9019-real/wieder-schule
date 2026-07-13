@@ -28,32 +28,33 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import de.Milad_Taromi.Game;
-import de.Milad_Taromi.Managers.DialogueChoice;
-import de.Milad_Taromi.Managers.DialoguePortrait;
+import de.Milad_Taromi.Dialogue.DialogueChoice;
+import de.Milad_Taromi.Dialogue.DialoguePortrait;
 import de.Milad_Taromi.Managers.GameManager;
-import de.Milad_Taromi.Managers.PortraitSide;
 import de.Milad_Taromi.Managers.TextManager;
 import de.Milad_Taromi.Managers.TextureManager;
 
 public class PlayScreen implements Screen {
 
+
     private static final float DIALOGUE_HEIGHT = 210f;
     private static final float DIALOGUE_MARGIN_X = 50f;
     private static final float DIALOGUE_MARGIN_BOTTOM = 35f;
 
+
     private static final float TEXT_PADDING_LEFT = 69f;
     private static final float TEXT_PADDING_RIGHT = 45f;
-    private static final float TEXT_PADDING_TOP = 35f;
+    private static final float TEXT_PADDING_TOP = 25f;
     private static final float TEXT_PADDING_BOTTOM = 30f;
 
-    private static final float PORTRAIT_HEIGHT = 390f;
-    private static final float PORTRAIT_MARGIN_X = 35f;
+    private static final float IMAGE_MAX_WIDTH_RATIO = 0.76f;
+    private static final float IMAGE_MAX_HEIGHT_RATIO = 0.78f;
 
-    /*
-     * Das Portrait wird relativ zur Dialogbox positioniert.
-     * Höherer Wert = Portrait weiter oben.
-     */
-    private static final float PORTRAIT_BOX_OFFSET_Y = 150f;
+    private static final float IMAGE_OFFSET_Y = -12f;
+
+    private static final float IMAGE_MARGIN_X = 25f;
+
+    private static final float IMAGE_MARGIN_TOP = 20f;
 
     private static final float CHOICE_BUTTON_WIDTH = 350f;
     private static final float CHOICE_BUTTON_HEIGHT = 55f;
@@ -82,7 +83,8 @@ public class PlayScreen implements Screen {
 
     private Image portraitImage;
     private DialoguePortrait currentPortrait = DialoguePortrait.NONE;
-    private PortraitSide currentPortraitSide;
+
+    private Texture currentPortraitTexture;
 
     public PlayScreen(Game game) {
         this.game = game;
@@ -92,10 +94,14 @@ public class PlayScreen implements Screen {
         textureManager = new TextureManager();
         backgroundDrawable = textureManager.textboxDrawable;
 
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(
+            new ScreenViewport()
+        );
 
         skin = new Skin(
-            Gdx.files.internal("ui/extra/glassy-ui.json")
+            Gdx.files.internal(
+                "ui/extra/glassy-ui.json"
+            )
         );
 
         gameManager = new GameManager(this);
@@ -130,15 +136,10 @@ public class PlayScreen implements Screen {
             skin,
             "black"
         );
-
+        dialogLabel.setFontScale(1.3f);
         dialogLabel.setWrap(true);
         dialogLabel.setAlignment(Align.topLeft);
 
-        /*
-         * Wichtiger Fix:
-         * Nur horizontal erweitern und füllen.
-         * Dadurch wird das Label nicht unnötig vertikal gestreckt.
-         */
         dialogueLabelCell = dialogueTable.add(dialogLabel)
             .expandX()
             .fillX()
@@ -180,15 +181,19 @@ public class PlayScreen implements Screen {
 
         dialogueTable.invalidateHierarchy();
 
+        updatePortraitSize();
         updatePortraitPosition();
+
         updateChoicesPosition();
+
+        updateActorOrder();
     }
 
-    private void updatePortraitPosition() {
+    private void updatePortraitSize() {
         if (
             portraitImage == null
                 || !portraitImage.isVisible()
-                || currentPortraitSide == null
+                || currentPortraitTexture == null
         ) {
             return;
         }
@@ -196,24 +201,80 @@ public class PlayScreen implements Screen {
         float worldWidth =
             stage.getViewport().getWorldWidth();
 
-        float x;
+        float worldHeight =
+            stage.getViewport().getWorldHeight();
 
-        if (currentPortraitSide == PortraitSide.LEFT) {
-            x = PORTRAIT_MARGIN_X;
-        } else {
-            x = worldWidth
-                - portraitImage.getWidth()
-                - PORTRAIT_MARGIN_X;
+        float maxWidth =
+            Math.min(
+                worldWidth * IMAGE_MAX_WIDTH_RATIO,
+                worldWidth - IMAGE_MARGIN_X * 2f
+            );
+
+        float maxHeightByScreen =
+            worldHeight * IMAGE_MAX_HEIGHT_RATIO;
+
+        float availableHeightAboveDialogue =
+            worldHeight
+                - dialogueTable.getTop()
+                - IMAGE_MARGIN_TOP
+                - IMAGE_OFFSET_Y;
+
+        float maxHeight =
+            Math.min(
+                maxHeightByScreen,
+                availableHeightAboveDialogue
+            );
+
+        maxWidth = Math.max(maxWidth, 1f);
+        maxHeight = Math.max(maxHeight, 1f);
+
+        float textureWidth =
+            currentPortraitTexture.getWidth();
+
+        float textureHeight =
+            currentPortraitTexture.getHeight();
+
+        float textureAspectRatio =
+            textureWidth / textureHeight;
+
+        float imageWidth = maxWidth;
+        float imageHeight =
+            imageWidth / textureAspectRatio;
+
+        if (imageHeight > maxHeight) {
+            imageHeight = maxHeight;
+            imageWidth =
+                imageHeight * textureAspectRatio;
         }
 
-        /*
-         * Portrait wird über der Dialogbox positioniert.
-         */
-        float y =
-            dialogueTable.getY()
-                + PORTRAIT_BOX_OFFSET_Y;
+        portraitImage.setSize(
+            imageWidth,
+            imageHeight
+        );
+    }
 
-        portraitImage.setPosition(x, y);
+    private void updatePortraitPosition() {
+        if (
+            portraitImage == null
+                || !portraitImage.isVisible()
+        ) {
+            return;
+        }
+
+        float worldWidth =
+            stage.getViewport().getWorldWidth();
+
+        float x =
+            (worldWidth - portraitImage.getWidth()) / 2f;
+
+        float y =
+            dialogueTable.getTop()
+                + IMAGE_OFFSET_Y;
+
+        portraitImage.setPosition(
+            MathUtils.round(x),
+            MathUtils.round(y)
+        );
     }
 
     private void updateChoicesPosition() {
@@ -238,6 +299,21 @@ public class PlayScreen implements Screen {
         );
     }
 
+    private void updateActorOrder() {
+        if (
+            portraitImage != null
+                && portraitImage.isVisible()
+        ) {
+            portraitImage.toFront();
+        }
+
+        dialogueTable.toFront();
+
+        if (choiceVisible) {
+            choicesTable.toFront();
+        }
+    }
+
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
@@ -260,8 +336,7 @@ public class PlayScreen implements Screen {
         );
 
         showPortrait(
-            dialogue.getPortrait(),
-            dialogue.getPortraitSide()
+            dialogue.getPortrait()
         );
     }
 
@@ -272,16 +347,13 @@ public class PlayScreen implements Screen {
     }
 
     public void showPortrait(
-        DialoguePortrait portrait,
-        PortraitSide side
+        DialoguePortrait portrait
     ) {
         currentPortrait = portrait;
-        currentPortraitSide = side;
 
         if (
             portrait == null
                 || portrait == DialoguePortrait.NONE
-                || side == null
         ) {
             hidePortrait();
             return;
@@ -300,79 +372,50 @@ public class PlayScreen implements Screen {
             return;
         }
 
+        currentPortraitTexture = portraitTexture;
+
         portraitImage.setDrawable(
             new TextureRegionDrawable(
                 new TextureRegion(portraitTexture)
             )
         );
 
-        float aspectRatio =
-            (float) portraitTexture.getWidth()
-                / (float) portraitTexture.getHeight();
-
-        float portraitWidth =
-            PORTRAIT_HEIGHT * aspectRatio;
-
-        portraitImage.setSize(
-            portraitWidth,
-            PORTRAIT_HEIGHT
-        );
-
         portraitImage.setVisible(true);
 
-        /*
-         * Wichtiger Fix:
-         * Kein zusätzliches Text-Padding abhängig von der Portrait-Seite.
-         * Das Portrait steht oberhalb der Box und verschiebt den Text daher nicht.
-         */
-        resetDialoguePadding();
-
+        updatePortraitSize();
         updatePortraitPosition();
 
-        /*
-         * Portrait vor die Dialogbox setzen.
-         */
-        portraitImage.toFront();
-
-        /*
-         * Auswahlbuttons müssen darüber bleiben.
-         */
-        if (choiceVisible) {
-            choicesTable.toFront();
-        }
+        updateActorOrder();
     }
 
     public void hidePortrait() {
-        currentPortrait = DialoguePortrait.NONE;
-        currentPortraitSide = null;
+        currentPortrait =
+            DialoguePortrait.NONE;
+
+        currentPortraitTexture = null;
 
         portraitImage.setVisible(false);
         portraitImage.setDrawable(null);
-
-        resetDialoguePadding();
     }
 
-    private void resetDialoguePadding() {
-        dialogueLabelCell
-            .padLeft(TEXT_PADDING_LEFT)
-            .padRight(TEXT_PADDING_RIGHT)
-            .padTop(TEXT_PADDING_TOP)
-            .padBottom(TEXT_PADDING_BOTTOM);
-
-        dialogueTable.invalidateHierarchy();
-    }
-
-    public void showChoices(DialogueChoice[] choices) {
+    public void showChoices(
+        DialogueChoice[] choices
+    ) {
         choicesTable.clearChildren();
 
-        if (choices == null || choices.length == 0) {
+        if (
+            choices == null
+                || choices.length == 0
+        ) {
             hideChoices();
             return;
         }
 
         choiceVisible = true;
 
-        for (DialogueChoice choice : choices) {
+        for (
+            final DialogueChoice choice : choices
+        ) {
             final TextButton choiceButton =
                 new TextButton(
                     choice.getText(),
@@ -387,7 +430,10 @@ public class PlayScreen implements Screen {
                         ChangeEvent event,
                         Actor actor
                     ) {
-                        if (!choiceVisible || noInput) {
+                        if (
+                            !choiceVisible
+                                || noInput
+                        ) {
                             return;
                         }
 
@@ -409,8 +455,7 @@ public class PlayScreen implements Screen {
         choicesTable.setVisible(true);
 
         updateChoicesPosition();
-
-        choicesTable.toFront();
+        updateActorOrder();
     }
 
     public void hideChoices() {
@@ -425,7 +470,11 @@ public class PlayScreen implements Screen {
             return;
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        if (
+            Gdx.input.isKeyJustPressed(
+                Input.Keys.ESCAPE
+            )
+        ) {
             System.out.println(
                 "[DEBUG] ESC was pressed!"
             );
@@ -436,7 +485,9 @@ public class PlayScreen implements Screen {
 
         if (
             !choiceVisible
-                && Gdx.input.isKeyJustPressed(Input.Keys.SPACE)
+                && Gdx.input.isKeyJustPressed(
+                Input.Keys.SPACE
+            )
         ) {
             gameManager.nextDialogue();
         }
@@ -452,7 +503,12 @@ public class PlayScreen implements Screen {
         final Image blocker = new Image(
             skin.newDrawable(
                 "white",
-                new Color(0f, 0f, 0f, 0.5f)
+                new Color(
+                    0f,
+                    0f,
+                    0f,
+                    0.5f
+                )
             )
         );
 
@@ -553,7 +609,10 @@ public class PlayScreen implements Screen {
             .height(50f);
 
         window.pack();
-        window.setSize(350f, 180f);
+        window.setSize(
+            350f,
+            180f
+        );
 
         window.setPosition(
             MathUtils.roundPositive(
@@ -597,7 +656,7 @@ public class PlayScreen implements Screen {
         batch.begin();
 
         batch.draw(
-            textureManager.menuBackgroundHorror,
+            textureManager.menuBackgroundDefault,
             0f,
             0f,
             Gdx.graphics.getWidth(),
@@ -613,7 +672,10 @@ public class PlayScreen implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {
+    public void resize(
+        int width,
+        int height
+    ) {
         stage.getViewport().update(
             width,
             height,
@@ -633,7 +695,9 @@ public class PlayScreen implements Screen {
 
     @Override
     public void hide() {
-        if (Gdx.input.getInputProcessor() == stage) {
+        if (
+            Gdx.input.getInputProcessor() == stage
+        ) {
             Gdx.input.setInputProcessor(null);
         }
     }

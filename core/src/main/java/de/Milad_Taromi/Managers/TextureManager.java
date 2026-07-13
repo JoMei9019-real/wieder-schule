@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import de.Milad_Taromi.Dialogue.DialoguePortrait;
 
 public class TextureManager {
 
@@ -18,6 +19,7 @@ public class TextureManager {
     public TextButton.TextButtonStyle quitStyle;
     public Texture menuBackground;
     public Texture menuBackgroundHorror;
+    public Texture menuBackgroundDefault;
     public Texture logoTexture;
 
     // Textbox (Dialogfenster)
@@ -29,6 +31,8 @@ public class TextureManager {
     private Texture playNormal, playHover, playPressed;
     private Texture optionsNormal, optionsHover, optionsPressed;
     private Texture exitNormal, exitHover, exitPressed;
+
+    public Texture picture1;
 
     public Texture johnnyNeutral;
     public Texture johnnyHappy;
@@ -44,6 +48,7 @@ public class TextureManager {
         MenuScreenTexture_OPTIONS();
         MenuScreenTexture_EXIT();
         Background_MENU();
+        Background_DEFAULT();
         Background_HORROR();
         Logo();
         Textbox();
@@ -58,7 +63,16 @@ public class TextureManager {
         menuBackgroundHorror = new Texture("ui/menu/Horror2.png");
     }
 
+    public void Background_DEFAULT(){
+        menuBackgroundDefault = new Texture("ui/menu/HintergrundID2.jpg");
+    }
+
     public void Portraits() {
+
+        picture1 = loadPortrait(
+            "ui/game/portraits/Petus.png"
+        );
+
         johnnyNeutral = loadPortrait(
             "ui/game/portraits/johnny_neutral.png"
         );
@@ -101,6 +115,10 @@ public class TextureManager {
         DialoguePortrait portrait
     ) {
         switch (portrait) {
+
+            case PICTURE1:
+                return picture1;
+
             case JOHNNY_NEUTRAL:
                 return johnnyNeutral;
 
@@ -198,6 +216,8 @@ public class TextureManager {
         disposeTexture(menuBackgroundHorror);
         disposeTexture(logoTexture);
         disposeTexture(textboxTexture);
+
+        disposeTexture(picture1);
 
         disposeTexture(johnnyNeutral);
         disposeTexture(johnnyHappy);

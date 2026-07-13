@@ -1,57 +1,49 @@
 package de.Milad_Taromi.Managers;
 
+import de.Milad_Taromi.Dialogue.DialogueChoice;
+import de.Milad_Taromi.Dialogue.DialoguePortrait;
+
 public class TextManager {
 
     private final String speaker;
     private final String text;
 
-    private final int nextDialogueIndex;
+    private final String nextDialogueId;
     private final DialogueChoice[] choices;
 
     private final DialoguePortrait portrait;
-    private final PortraitSide portraitSide;
 
-    /*
-     * Normaler Dialog ohne Auswahl.
-     */
     public TextManager(
         String speaker,
         String text,
-        int nextDialogueIndex,
-        DialoguePortrait portrait,
-        PortraitSide portraitSide
+        String nextDialogueId,
+        DialoguePortrait portrait
     ) {
         this.speaker = speaker == null ? "" : speaker;
         this.text = text == null ? "" : text;
 
-        this.nextDialogueIndex = nextDialogueIndex;
+        this.nextDialogueId = nextDialogueId;
         this.choices = null;
 
         this.portrait = portrait;
-        this.portraitSide = portraitSide;
     }
 
-    /*
-     * Dialog mit Auswahlmöglichkeiten.
-     */
     public TextManager(
         String speaker,
         String text,
         DialogueChoice[] choices,
-        DialoguePortrait portrait,
-        PortraitSide portraitSide
+        DialoguePortrait portrait
     ) {
         this.speaker = speaker == null ? "" : speaker;
         this.text = text == null ? "" : text;
 
-        this.nextDialogueIndex = -1;
+        this.nextDialogueId = null;
 
         this.choices = choices == null
             ? null
             : choices.clone();
 
         this.portrait = portrait;
-        this.portraitSide = portraitSide;
     }
 
     public String getFormattedText() {
@@ -70,16 +62,12 @@ public class TextManager {
         return text;
     }
 
-    public int getNextDialogueIndex() {
-        return nextDialogueIndex;
+    public String getNextDialogueId() {
+        return nextDialogueId;
     }
 
     public DialoguePortrait getPortrait() {
         return portrait;
-    }
-
-    public PortraitSide getPortraitSide() {
-        return portraitSide;
     }
 
     public boolean hasChoices() {

@@ -1,8 +1,10 @@
-package de.Milad_Taromi.Managers;
+package de.Milad_Taromi.Dialogue;
 
 public enum DialoguePortrait {      ///enum erstmals unbekannt: Hilfe über YT Tutorials usw.
 
     NONE,
+
+    PICTURE1,
 
     JOHNNY_NEUTRAL,
     JOHNNY_HAPPY,
