@@ -34,20 +34,28 @@ import de.Milad_Taromi.Managers.GameManager;
 import de.Milad_Taromi.Managers.TextManager;
 import de.Milad_Taromi.Managers.TextureManager;
 
+/// Die Klasse PlayScreen stellt den eigentlichen Spielbildschirm dar.
+/// Sie zeigt den Hintergrund, die Dialogbox, Bilder und Antwortmöglichkeiten an.
+/// Außerdem verarbeitet sie Tastatureingaben.
+
+/// NOTES:
+/// STATIC: Die Variable gehört zur Klasse selbst und nicht zu einem einzelnen PlayScreen-Objekt.
+/// FINAL: Der Wert darf nach der Festlegung nicht mehr geändert werden.
+
 public class PlayScreen implements Screen {
 
 
-    private static final float DIALOGUE_HEIGHT = 210f;
-    private static final float DIALOGUE_MARGIN_X = 50f;
-    private static final float DIALOGUE_MARGIN_BOTTOM = 35f;
+    private static final float DIALOGUE_HEIGHT = 210f;      /// Diese Werte bestimmen die Größe und Position der Dialogbox.
+    private static final float DIALOGUE_MARGIN_X = 50f;     /// Abstand zum linken und rechten Rand
+    private static final float DIALOGUE_MARGIN_BOTTOM = 35f;    /// Abstand nach unten
 
 
-    private static final float TEXT_PADDING_LEFT = 69f;
+    private static final float TEXT_PADDING_LEFT = 69f;     /// Abstand zwischen Text und Rand der Dialogbox
     private static final float TEXT_PADDING_RIGHT = 45f;
     private static final float TEXT_PADDING_TOP = 25f;
     private static final float TEXT_PADDING_BOTTOM = 30f;
 
-    private static final float IMAGE_MAX_WIDTH_RATIO = 0.76f;
+    private static final float IMAGE_MAX_WIDTH_RATIO = 0.76f;   /// Definiert max. Größe der Bilder (76% der Bildschirmbreite)
     private static final float IMAGE_MAX_HEIGHT_RATIO = 0.78f;
 
     private static final float IMAGE_OFFSET_Y = -12f;
@@ -56,35 +64,43 @@ public class PlayScreen implements Screen {
 
     private static final float IMAGE_MARGIN_TOP = 20f;
 
-    private static final float CHOICE_BUTTON_WIDTH = 350f;
+    private static final float CHOICE_BUTTON_WIDTH = 350f;  /// Diese Konstanten bestimmen die Größe der Antwortbuttons.
     private static final float CHOICE_BUTTON_HEIGHT = 55f;
     private static final float CHOICE_BUTTON_SPACING = 12f;
 
     private final Game game;
 
+    /// Diese Variable speichert, ob die Geschichte bereits gestartet wurde.
+    /// Dadurch wird verhindert, dass der erste Akt mehrfach gestartet wird.
     private boolean storyStarted = false;
+
+    /// Diese Variable blockiert Eingaben.
+    /// Aktiv, wenn das Exit-Fenster geöffnet ist als bsp.
     private boolean noInput = false;
+
+    /// Diese Variable speichert, ob aktuell Antwortmöglichkeiten angezeigt werden.
     private boolean choiceVisible = false;
 
+    /// Kennen wir alles von vorhin, also dem MenuScreen.class
     private Stage stage;
     private Skin skin;
     private TextureManager textureManager;
-    private GameManager gameManager;
+    private GameManager gameManager;    /// Lädt die GameManager Klasse wo die Story u.a. definiert ist.
 
     private SpriteBatch batch;
 
-    private NinePatchDrawable backgroundDrawable;
+    private NinePatchDrawable backgroundDrawable;   /// Hintergrund
 
-    private Table dialogueTable;
+    private Table dialogueTable;    /// Skalierung und rendern für Dialog und Choices
     private Table choicesTable;
 
-    private Label dialogLabel;
+    private Label dialogLabel;      /// Label bzw Text.
     private Cell<Label> dialogueLabelCell;
 
-    private Image portraitImage;
-    private DialoguePortrait currentPortrait = DialoguePortrait.NONE;
+    private Image portraitImage;        /// WICHTIG: Portraits werden nicht mehr von uns verwendet. Viel Ballast noch im Code vorhanden leider!
+    private DialoguePortrait currentPortrait = DialoguePortrait.NONE;   /// hier ein Beispiel haha
 
-    private Texture currentPortraitTexture;
+    private Texture currentPortraitTexture;     /// Aktuelles Bild (nicht nur Portrait)
 
     public PlayScreen(Game game) {
         this.game = game;
