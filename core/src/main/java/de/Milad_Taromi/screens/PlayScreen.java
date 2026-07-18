@@ -108,25 +108,22 @@ public class PlayScreen implements Screen {
         batch = new SpriteBatch();
 
         textureManager = new TextureManager();
-        backgroundDrawable = textureManager.textboxDrawable;
+        backgroundDrawable = textureManager.textboxDrawable;    /// laden der Textur für Dialog-Box
 
-        stage = new Stage(
+        stage = new Stage(          /// Das gleiche wie beim Hauptmenü
             new ScreenViewport()
         );
 
         skin = new Skin(
-            Gdx.files.internal(
-                "ui/extra/glassy-ui.json"
-            )
-        );
+            Gdx.files.internal("ui/extra/glassy-ui.json"));  /// Laden der Texturen für den Screen selbst
 
-        gameManager = new GameManager(this);
+        gameManager = new GameManager(this);    /// Laden des GameManagers, welches unser Script enthält
 
-        createUI();
+        createUI(); /// Erstellen des GUIs
     }
 
     private void createUI() {
-        createPortraitUI();
+        createPortraitUI();     /// Laden der Portraits bzw der Bilder
         createDialogueUI();
         createChoicesUI();
 
@@ -134,32 +131,32 @@ public class PlayScreen implements Screen {
     }
 
     private void createPortraitUI() {
-        portraitImage = new Image();
+        portraitImage = new Image();    /// Laden der Bilder
 
-        portraitImage.setVisible(false);
-        portraitImage.setTouchable(Touchable.disabled);
-        portraitImage.setScaling(Scaling.fit);
+        portraitImage.setVisible(false);    /// Erstmal nicht sichtbar
+        portraitImage.setTouchable(Touchable.disabled); /// Nicht anklickbar, um probleme beim User-Input zu vermeiden.
+        portraitImage.setScaling(Scaling.fit);  /// Skalierung so, dass es auch ins Fenster passt
 
-        stage.addActor(portraitImage);
+        stage.addActor(portraitImage);  /// Hinzufügen des Bildes zur Stage
     }
 
-    private void createDialogueUI() {
-        dialogueTable = new Table();
-        dialogueTable.setBackground(backgroundDrawable);
+    private void createDialogueUI() {           /// Erstellen: Dialog-Box und Text
+        dialogueTable = new Table();            /// Erstellen eines Tabels zur passenden Skalierung
+        dialogueTable.setBackground(backgroundDrawable);    /// Hintergrund ist der, den wir oben im Konstruktor geladen haben. (Zeile 111)
 
-        dialogLabel = new Label(
+        dialogLabel = new Label(        /// Ein Leerer Text (Label) wird erstellt, den wir später in der Gamemanager Klasse ändern werden.
             "",
             skin,
             "black"
         );
-        dialogLabel.setFontScale(1.3f);
-        dialogLabel.setWrap(true);
-        dialogLabel.setAlignment(Align.topLeft);
+        dialogLabel.setFontScale(1.3f);         /// größe des Textes verändert, damit es angenehmer zu lesen ist :)
+        dialogLabel.setWrap(true);              /// Verteilung von zu langen Texten auf mehreren Zeilen
+        dialogLabel.setAlignment(Align.topLeft);/// Text beginnt oben Link
 
-        dialogueLabelCell = dialogueTable.add(dialogLabel)
+        dialogueLabelCell = dialogueTable.add(dialogLabel)  /// Festsetzen der Abstände und Hinzufügen zu einer Tabel (Skalierung)
             .expandX()
             .fillX()
-            .padLeft(TEXT_PADDING_LEFT)
+            .padLeft(TEXT_PADDING_LEFT)             /// Variablen ganz oben im Konstruktor
             .padRight(TEXT_PADDING_RIGHT)
             .padTop(TEXT_PADDING_TOP)
             .padBottom(TEXT_PADDING_BOTTOM)
@@ -169,24 +166,24 @@ public class PlayScreen implements Screen {
         stage.addActor(dialogueTable);
     }
 
-    private void createChoicesUI() {
+    private void createChoicesUI() {            /// Kümmert sich um die Antwortmöglichkeiten
         choicesTable = new Table();
 
-        choicesTable.setVisible(false);
-        choicesTable.setTouchable(Touchable.enabled);
+        choicesTable.setVisible(false);     /// erstmal unsichtbar, auf Abruf dann wieder sichtbar
+        choicesTable.setTouchable(Touchable.enabled);   /// Anklickbar, sonst würden die Buttons nicht funktionieren
 
-        stage.addActor(choicesTable);
+        stage.addActor(choicesTable);       /// Hinzufügen zum Rendern
     }
 
-    private void updateLayout() {
+    private void updateLayout() {       /// Diese Methode berechnet die Größe und Position aller Elemente neu.
         float worldWidth =
             stage.getViewport().getWorldWidth();
 
-        float dialogueWidth =
-            worldWidth - DIALOGUE_MARGIN_X * 2f;
+        float dialogueWidth =                                   /// Die aktuelle Breite des Spielfensters wird abgefragt.
+            worldWidth - DIALOGUE_MARGIN_X * 2f;                /// Von Fensterbreite werden je 50 pixel Abstand abgezogen
 
-        dialogueTable.setSize(
-            dialogueWidth,
+        dialogueTable.setSize(                                  /// Setzen der neuen größe (Nur wichtig für veränderbare Fenstergröße)
+            dialogueWidth,                                      /// WICHTIG: Bei uns aktuell aus technischen Gründen ausgeschaltet!
             DIALOGUE_HEIGHT
         );
 
@@ -195,7 +192,7 @@ public class PlayScreen implements Screen {
             DIALOGUE_MARGIN_BOTTOM
         );
 
-        dialogueTable.invalidateHierarchy();
+        dialogueTable.invalidateHierarchy();        /// Anordnung zur Neuberrechnung durch die Engine
 
         updatePortraitSize();
         updatePortraitPosition();
@@ -205,24 +202,24 @@ public class PlayScreen implements Screen {
         updateActorOrder();
     }
 
-    private void updatePortraitSize() {
+    private void updatePortraitSize() {                 /// Update Methode für die Bilder aus Open Source Game von GitHub geklaut :)  (Link: ???)
         if (
             portraitImage == null
-                || !portraitImage.isVisible()
-                || currentPortraitTexture == null
+                || !portraitImage.isVisible()               /// Falls kein Bild vorhanden ist, wird die Methode sofort beendet.
+                || currentPortraitTexture == null           ///Danach werden die maximale Breite und Höhe berechnet.
         ) {
             return;
         }
 
         float worldWidth =
-            stage.getViewport().getWorldWidth();
+            stage.getViewport().getWorldWidth();            /// Auslesen der Fensterbreite und Höhe
 
         float worldHeight =
             stage.getViewport().getWorldHeight();
 
         float maxWidth =
             Math.min(
-                worldWidth * IMAGE_MAX_WIDTH_RATIO,
+                worldWidth * IMAGE_MAX_WIDTH_RATIO,     /// Finde Minimum aus weltgröße * Variable und weltgröße - BildX * 2
                 worldWidth - IMAGE_MARGIN_X * 2f
             );
 
@@ -264,12 +261,12 @@ public class PlayScreen implements Screen {
         }
 
         portraitImage.setSize(
-            imageWidth,
+            imageWidth,                 /// Finale
             imageHeight
         );
     }
 
-    private void updatePortraitPosition() {
+    private void updatePortraitPosition() {             /// Berechnung auch aus dem Git Code geklaut
         if (
             portraitImage == null
                 || !portraitImage.isVisible()
@@ -293,7 +290,7 @@ public class PlayScreen implements Screen {
         );
     }
 
-    private void updateChoicesPosition() {
+    private void updateChoicesPosition() {      /// Berechnung auch aus dem Git Code geklaut
         if (choicesTable == null) {
             return;
         }
@@ -318,67 +315,65 @@ public class PlayScreen implements Screen {
     private void updateActorOrder() {
         if (
             portraitImage != null
-                && portraitImage.isVisible()
+                && portraitImage.isVisible()        /// Falls Bild aktiv, dann ...
         ) {
-            portraitImage.toFront();
+            portraitImage.toFront();        /// Bilder immer zur Front sonst verschwinden sie im Hintergrund :)
         }
 
-        dialogueTable.toFront();
+        dialogueTable.toFront();            /// Dialog auch!
 
         if (choiceVisible) {
-            choicesTable.toFront();
+            choicesTable.toFront();         /// "Auswahl" auch!
         }
     }
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(stage); /// Die Stage erhält Tastatur- und Mauseingaben.
 
-        updateLayout();
+        updateLayout();     /// Layout muss up to date sein (jetzt unwichtig, da Fenstergröße eh fest ist!)
 
-        if (!storyStarted) {
+        if (!storyStarted) {        /// Wenn die Geschichte noch nicht gestartet wurde, beginnt der erste Akt.
             storyStarted = true;
-            gameManager.startAct1();
+            gameManager.startAct1();    /// Akt 1 wird aufgerufen aus GameManager.class
         }
     }
 
-    public void displayDialogue(TextManager dialogue) {
-        if (dialogue == null) {
+    public void displayDialogue(TextManager dialogue) {          /// Diese Methode zeigt einen vollständigen Dialog an.
+        if (dialogue == null) {                                 /// Wenn kein Dialog festgesetzt ist, dann mach NIX!
             return;
         }
 
-        setDialogue(
-            dialogue.getFormattedText()
+        setDialogue(                                            /// Sonst schreibe Text in Dialog-Box
+            dialogue.getFormattedText()                         /// Text kommt aus dem TextManager.class, wo es vor-formatiert wird!
         );
 
         showPortrait(
-            dialogue.getPortrait()
+            dialogue.getPortrait()                              /// TextManager.class gibt auch das passende Bild aus.
         );
     }
 
     public void setDialogue(String text) {
         dialogLabel.setText(
-            text == null ? "" : text
-        );
+            text == null ? "" : text                        /// Falls text den Wert null hat, wird stattdessen ein leerer Text angezeigt um crash zu verhindern
+        );                                                  /// Sonst wird "text" eingesetzt, welches wir durch den Methodenaufruf definieren (vgl. Z 347)
     }
 
-    public void showPortrait(
-        DialoguePortrait portrait
-    ) {
-        currentPortrait = portrait;
+    public void showPortrait(DialoguePortrait portrait) {
+        currentPortrait = portrait;                         /// Abfrage des aktuellen Bildes (1x pro Methodenaufruf)
 
         if (
-            portrait == null
+            portrait == null                                /// Falls keine Figur ausgewählt wurde, wird das Bild ausgeblendet.
                 || portrait == DialoguePortrait.NONE
         ) {
-            hidePortrait();
+            hidePortrait();                                 /// Ausblenden!
             return;
         }
 
-        Texture portraitTexture =
+        Texture portraitTexture =                           /// Sonst: aktuelle Textur aufrufen vom TextureManager.class
             textureManager.getPortraitTexture(portrait);
 
-        if (portraitTexture == null) {
+        if (portraitTexture == null) {                      /// Error-Handler, falls kein Bild aufgerufen werden konnte
             System.err.println(
                 "[PORTRAIT] Keine Textur gefunden für: "
                     + portrait
@@ -388,129 +383,119 @@ public class PlayScreen implements Screen {
             return;
         }
 
-        currentPortraitTexture = portraitTexture;
+        currentPortraitTexture = portraitTexture;       /// currentPortraitTexture wird auf die aktuelle Textur des Bildes gesetzt
 
         portraitImage.setDrawable(
-            new TextureRegionDrawable(
+            new TextureRegionDrawable(                  /// Aufruf der Engine, um das Bild zu zeichnen
                 new TextureRegion(portraitTexture)
             )
         );
 
-        portraitImage.setVisible(true);
+        portraitImage.setVisible(true);             /// Dabei wird das Bild auf "sichtbar" gesetzt
 
-        updatePortraitSize();
-        updatePortraitPosition();
+        updatePortraitSize();                       /// Update der größe wird immer ausgeführt
+        updatePortraitPosition();                   /// Position wird auch passend gesetzt
 
-        updateActorOrder();
+        updateActorOrder();                         /// Reihenfolge wird ebenfalls passend gesetzt
     }
 
-    public void hidePortrait() {
+    public void hidePortrait() {                    /// Das ist die passende Methode, um das Bild zu verstecken
         currentPortrait =
-            DialoguePortrait.NONE;
+            DialoguePortrait.NONE;                  /// Setzt DialoguePortrait auf None
 
-        currentPortraitTexture = null;
+        currentPortraitTexture = null;              /// currentPortraitTexture Variable auf null gesetzt für passende Handler oben!
 
-        portraitImage.setVisible(false);
-        portraitImage.setDrawable(null);
+        portraitImage.setVisible(false);            /// Bild ist nun unsichtbar
+        portraitImage.setDrawable(null);            /// Kann auch nicht mehr gezeichnet werden von der Engine
     }
 
-    public void showChoices(
-        DialogueChoice[] choices
-    ) {
-        choicesTable.clearChildren();
+    public void showChoices(DialogueChoice[] choices) {  /// Hier entsteht das Interface für die Entscheidungen im Game
+        choicesTable.clearChildren();                    /// Entfernen alter Buttons
 
         if (
-            choices == null
+            choices == null                             /// Falls keine Antwortmöglichkeiten vorhanden sind, wird die Auswahltabelle ausgeblendet.
                 || choices.length == 0
         ) {
             hideChoices();
             return;
         }
 
-        choiceVisible = true;
+        choiceVisible = true;                       /// Sonst wird das Interface auf sichtbar gesetzt
 
-        for (
-            final DialogueChoice choice : choices
-        ) {
-            final TextButton choiceButton =
-                new TextButton(
-                    choice.getText(),
-                    skin,
-                    "small"
-                );
+        for (final DialogueChoice choice : choices) {
+            final TextButton choiceButton = new TextButton(choice.getText(),
+                skin,"small");              /// Mit einer Schleife wird für jede Antwortmöglichkeit ein eigener Button erstellt.
 
-            choiceButton.addListener(
-                new ChangeListener() {
+            choiceButton.addListener(new ChangeListener() {
                     @Override
-                    public void changed(
+                    public void changed(            /// Button-CLICK Listener der Engine
                         ChangeEvent event,
                         Actor actor
                     ) {
                         if (
                             !choiceVisible
-                                || noInput
+                                || noInput          /// Aber vorher überprüfen, ob Eingaben erlaubt sind!
                         ) {
-                            return;
+                            return;                 /// Abbruch
                         }
 
-                        choiceVisible = false;
+                        choiceVisible = false;      /// choiceVisible auf false -> Unsichtbar
 
-                        gameManager.selectChoice(choice);
+                        gameManager.selectChoice(choice); /// Der GameManager entscheidet anschließend, was beim klicken passiert!
                     }
                 }
             );
 
-            choicesTable.add(choiceButton)
-                .width(CHOICE_BUTTON_WIDTH)
+            choicesTable.add(choiceButton)              /// Eintragen der Buttons mit passendem Abstand und Formatierung!
+                .width(CHOICE_BUTTON_WIDTH)             /// Variablen vorher festgelegt = "Hardcoded"
                 .height(CHOICE_BUTTON_HEIGHT)
                 .padBottom(CHOICE_BUTTON_SPACING)
                 .row();
         }
 
-        choicesTable.pack();
-        choicesTable.setVisible(true);
+        choicesTable.pack();                        /// Komprimieren bzw. zusammenpacken
+        choicesTable.setVisible(true);              /// Auf sichtbar setzen
 
-        updateChoicesPosition();
-        updateActorOrder();
+        updateChoicesPosition();                    /// positions-update wenn Festergröße vom User geändert wird.
+        updateActorOrder();                         /// Reihenfolge wieder updaten, damit nix irgendwie verschwindet oder überdeckt wird.
     }
 
-    public void hideChoices() {
+    public void hideChoices() {                     /// Methode, um Auswahlmöglichkeiten zu verstecken
         choiceVisible = false;
-
         choicesTable.clearChildren();
         choicesTable.setVisible(false);
     }
 
-    private void keyManager() {
+    private void keyManager() {                 /// Diese Methode prüft die Tastatureingaben.
         if (noInput) {
             return;
         }
 
         if (
             Gdx.input.isKeyJustPressed(
-                Input.Keys.ESCAPE
+                Input.Keys.ESCAPE               /// Bei der ESC Taste ...
             )
         ) {
             System.out.println(
-                "[DEBUG] ESC was pressed!"
+                "[DEBUG] ESC was pressed!"      /// Debug line
             );
 
-            exitWindow();
+            exitWindow();               /// exit-Fenster anzeigen!
             return;
         }
 
         if (
             !choiceVisible
                 && Gdx.input.isKeyJustPressed(
-                Input.Keys.SPACE
+                Input.Keys.SPACE        /// Mit SPACE-Taste kann man zum...
             )
         ) {
-            gameManager.nextDialogue();
+            gameManager.nextDialogue();     /// ... nächsten Dialog gelangen
         }
     }
 
-    public void exitWindow() {
-        if (noInput) {
+    public void exitWindow() {  /// Exakte kopie wie von "MenuScreen.class"
+        if (noInput) {          /// Nur mit überprüfung, ob das rendern erlaubt ist oder nicht, um den Spieler nicht zu stören!
             return;
         }
 
@@ -539,7 +524,7 @@ public class PlayScreen implements Screen {
         stage.addActor(blocker);
 
         final Window window = new Window(
-            "EXIT TO MENU",
+            "SPIEL VERLASSEN",
             skin
         );
 
@@ -548,7 +533,7 @@ public class PlayScreen implements Screen {
         window.setModal(true);
 
         Label questionLabel = new Label(
-            "Do you really want to exit?",
+            "Willst du wirklich ins Hauptmenü zurück?",
             skin,
             "black"
         );
@@ -560,14 +545,14 @@ public class PlayScreen implements Screen {
 
         final TextButton buttonYes =
             new TextButton(
-                "YES",
+                "JA",
                 skin,
                 "small"
             );
 
         final TextButton buttonNo =
             new TextButton(
-                "NO",
+                "NEIN",
                 skin,
                 "small"
             );
@@ -592,7 +577,7 @@ public class PlayScreen implements Screen {
                     noInput = false;
 
                     game.setScreen(
-                        new MenuScreen(game)
+                        new MenuScreen(game)        /// Aufruf von Hauptmenü bei "JA"
                     );
                 }
             }
@@ -606,11 +591,11 @@ public class PlayScreen implements Screen {
                     Actor actor
                 ) {
                     window.remove();
-                    blocker.remove();
+                    blocker.remove();           /// SONST: schließen der Fenster und Blocker, um input nicht zu behindern!
 
                     noInput = false;
 
-                    Gdx.input.setInputProcessor(stage);
+                    Gdx.input.setInputProcessor(stage);     /// Input an Stage abgegeben
                 }
             }
         );
@@ -653,12 +638,12 @@ public class PlayScreen implements Screen {
         blocker.toFront();
         window.toFront();
 
-        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(stage); /// Doppelt hält halt besser :D
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(
+        Gdx.gl.glClearColor(    /// Der vorherige Bildschirminhalt wird gelöscht und der Hintergrund zunächst schwarz gefärbt.
             0f,
             0f,
             0f,
@@ -669,26 +654,26 @@ public class PlayScreen implements Screen {
             GL20.GL_COLOR_BUFFER_BIT
         );
 
-        batch.begin();
+        batch.begin();      /// START SIGNAL zum ZEICHNEN!
 
         batch.draw(
-            textureManager.menuBackgroundDefault,
+            textureManager.menuBackgroundDefault,   /// Hintergrund
             0f,
             0f,
-            Gdx.graphics.getWidth(),
-            Gdx.graphics.getHeight()
+            Gdx.graphics.getWidth(),                /// mit passender Höhe
+            Gdx.graphics.getHeight()                /// und Breite
         );
 
-        batch.end();
+        batch.end();                /// ENDE der ZEICHNUNG!
 
-        keyManager();
+        keyManager();       /// Permanente ausführung vom KeyManager
 
-        stage.act(delta);
-        stage.draw();
+        stage.act(delta);       /// Animationen und UI-Elemente werden aktualisiert.
+        stage.draw();           /// Alle Elemente final gezeichnet
     }
 
     @Override
-    public void resize(
+    public void resize(     /// Nur bei veränderung der Fenstergröße aufgerufen, bei uns nicht der Fall!
         int width,
         int height
     ) {
@@ -698,11 +683,11 @@ public class PlayScreen implements Screen {
             true
         );
 
-        updateLayout();
+        updateLayout();     /// Methode zur Anpassung existiert trotzdem
     }
 
     @Override
-    public void pause() {
+    public void pause() {       /// Von der ENGINE SELBST eingesetzte Methoden, bitte nicht löschen!
     }
 
     @Override
@@ -719,7 +704,7 @@ public class PlayScreen implements Screen {
     }
 
     @Override
-    public void dispose() {
+    public void dispose() {     /// Alles löschen beim Aufruf, weil RAM = TEUER
         batch.dispose();
         stage.dispose();
         skin.dispose();
