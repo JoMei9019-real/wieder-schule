@@ -533,7 +533,7 @@ public class PlayScreen implements Screen {
         window.setModal(true);
 
         Label questionLabel = new Label(
-            "Willst du wirklich ins Hauptmenü zurück?",
+            "Willst du wirklich das Spiel verlassen?",
             skin,
             "black"
         );

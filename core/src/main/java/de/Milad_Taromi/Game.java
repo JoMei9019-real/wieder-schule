@@ -24,7 +24,7 @@ public class Game extends com.badlogic.gdx.Game {
     /// Speichert den Fenstertitel in einer String-Variable.
     /// Anschließend wird dieser Titel zurückgegeben und als Fenster-Titel gesetzt.
     public static String getTitle(){
-        String title = "[VALORIA] | Developer Beta 0.7.2 | ";
+        String title = "[VALORIA] | Developer Beta 0.7.3 | ";
         return title;
     }
 }
