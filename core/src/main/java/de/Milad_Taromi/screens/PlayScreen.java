@@ -462,8 +462,8 @@ public class PlayScreen implements Screen {
 
     public void hideChoices() {                     /// Methode, um Auswahlmöglichkeiten zu verstecken
         choiceVisible = false;
-        choicesTable.clearChildren();
-        choicesTable.setVisible(false);
+        choicesTable.clearChildren();               /// Entfernen der Buttons usw.
+        choicesTable.setVisible(false);             /// Verstecken der Table
     }
 
     private void keyManager() {                 /// Diese Methode prüft die Tastatureingaben.

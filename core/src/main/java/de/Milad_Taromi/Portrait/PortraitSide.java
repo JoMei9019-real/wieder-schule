@@ -1,6 +1,6 @@
 package de.Milad_Taromi.Portrait;
 
-public enum PortraitSide {
+public enum PortraitSide {  /// Unbenutzt
     LEFT,
     RIGHT
 }
