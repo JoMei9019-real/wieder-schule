@@ -6,15 +6,15 @@ public class DialogueChoice {
     private final String nextDialogueId;
 
     public DialogueChoice(String text, String nextDialogueId) {
-        this.text = text == null ? "" : text;
-        this.nextDialogueId = nextDialogueId;
+        this.text = text == null ? "" : text;   /// Falls text den Wert null besitzt, wird stattdessen ein leerer String ("") gespeichert.
+        this.nextDialogueId = nextDialogueId;   /// oben: Verhindert Crashes wegen "null"
     }
 
     public String getText() {
-        return text;
+        return text;        /// Diese Methode gibt den Text der Antwort zurück. Wird benötigt beim "rendern" der Buttons
     }
 
     public String getNextDialogueId() {
-        return nextDialogueId;
+        return nextDialogueId;  /// Diese Methode gibt die ID des nächsten Dialogs zurück. Wichtig für GameManager.class
     }
 }

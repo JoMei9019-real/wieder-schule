@@ -32,14 +32,14 @@ public class GameManager {
             "Milad",
             "Nicht viel. Wo sind wir hier?",
             "johnny_unsure",
-            DialoguePortrait.MILAD_NEUTRAL
+            DialoguePortrait.PICTURE1
         ));
 
         act1Dialogues.put("johnny_unsure", new TextManager(
             "Johnny",
             "Das weiß ich selbst nicht genau...",
             "johnny_choice",
-            DialoguePortrait.JOHNNY_NEUTRAL
+            DialoguePortrait.PICTURE1
         ));
 
         // Auswahl
@@ -50,35 +50,35 @@ public class GameManager {
                 new DialogueChoice("Nichts machen", "milad_stay"),      /// Aufruf von einem Array mit Antwortmöglichkeiten und was dannach
                 new DialogueChoice("Joggen gehen", "milad_jog")         /// ... passieren soll
             },
-            DialoguePortrait.JOHNNY_NEUTRAL
+            DialoguePortrait.PICTURE1
         ));
 
         act1Dialogues.put("milad_stay", new TextManager(
             "Milad",
             "Lass uns einfach hierbleiben.",
             "johnny_boring",
-            DialoguePortrait.MILAD_SAD
+            DialoguePortrait.PICTURE1
         ));
 
         act1Dialogues.put("johnny_boring", new TextManager(
             "Johnny",
             "Das klingt ziemlich langweilig.",
             (String) null, // Ende
-            DialoguePortrait.JOHNNY_ANGRY
+            DialoguePortrait.PICTURE1
         ));
 
         act1Dialogues.put("milad_jog", new TextManager(
             "Milad",
             "Lass uns eine Runde joggen gehen!",
             "johnny_okay",
-            DialoguePortrait.MILAD_HAPPY
+            DialoguePortrait.PICTURE1
         ));
 
         act1Dialogues.put("johnny_okay", new TextManager(
             "Johnny",
             "Okay, aber nicht so schnell!",
             (String) null, // Ende
-            DialoguePortrait.JOHNNY_HAPPY
+            DialoguePortrait.PICTURE1
         ));
     }
 
